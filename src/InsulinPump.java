@@ -25,7 +25,7 @@ public class InsulinPump {
     public void setSensitivity(int amount) { this.sensitivity = amount; }
     public void deliveryScreen(double bolus) {
         for (int i = 0; i < Math.ceil(bolus) + 1; i++) {
-            if (i == Math.floor(bolus)) { System.out.println("Bolus: " + bolus); } else {
+            if (i == Math.ceil(bolus)) { System.out.println("Bolus: " + bolus); break; } else {
                 System.out.println("Bolus: " + (double) i);
                 try { Thread.sleep(1000); } catch (InterruptedException e) { throw new RuntimeException(e); }
             }
