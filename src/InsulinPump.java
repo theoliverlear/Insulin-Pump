@@ -1,4 +1,7 @@
-import java.security.PublicKey;
+// Oliver Sigwarth
+// A Java program for diabetics that makes calculations that help manage their blood sugar.
+// Created 2/16/2023
+// Last Modified 2/16/2023
 import java.util.ArrayList;
 import java.util.Scanner;
 public class InsulinPump {
