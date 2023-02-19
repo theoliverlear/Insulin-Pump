@@ -2,15 +2,17 @@
 // A Java program for diabetics that makes calculations that help manage their blood sugar.
 // Created 2/16/2023
 // Last Modified 2/16/2023
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
+import java.text.SimpleDateFormat;
 public class InsulinPump {
     private int carbRatio;
     private int sensitivity;
     private int bloodSugar;
     private int rangeFloor;
-    ArrayList <Number> bloodSugarLog = new ArrayList<>();
+    ArrayList <Integer> bloodSugarLog = new ArrayList<>();
+    TreeMap<Integer, Date> bloodSugarTimeLog = new TreeMap<Integer, Date>();
     static Scanner input = new Scanner(System.in);
+    SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss aaa");
     public InsulinPump(int carbRatio, int sensitivity, int rangeFloor, int bloodSugar ) {
         this.carbRatio = carbRatio;
         this.sensitivity = sensitivity;
@@ -21,6 +23,7 @@ public class InsulinPump {
     public int getRangeFloor() { return this.rangeFloor; }
     public int getSensitivity() { return this.sensitivity; }
     public int getCarbRatio() { return this.carbRatio; }
+    public void setBloodSugar(int amount) { this.bloodSugar = amount; }
     public void setCarbRatio(int amount) { this.carbRatio = amount; }
     public void setSensitivity(int amount) { this.sensitivity = amount; }
     public void deliveryScreen(double bolus) {
@@ -29,6 +32,21 @@ public class InsulinPump {
                 System.out.println("Bolus: " + (double) i);
                 try { Thread.sleep(1000); } catch (InterruptedException e) { throw new RuntimeException(e); }
             }
+        }
+    }
+    public void testBloodSugar() {
+        System.out.println("What is your blood sugar?");
+        int bloodSugarTest = input.nextInt();
+        this.setBloodSugar(bloodSugarTest);
+        addToBloodSugarHistory(bloodSugarTest);
+    }
+    public void addToBloodSugarHistory(int bloodSugar) {
+        bloodSugarLog.add(bloodSugar);
+        bloodSugarTimeLog.put(getBloodSugar(), new Date());
+    }
+    public void viewHistory() { // To do: different history methods
+        for (Map.Entry<Integer, Date> entry : bloodSugarTimeLog.entrySet()) {
+            System.out.println("Time: " +  dateTimeFormatter.format(entry.getValue()) + " Blood sugar: " + entry.getKey() + "mg/dl");
         }
     }
     public void bolusWizard(int carbs) {
@@ -77,9 +95,9 @@ public class InsulinPump {
         int choice = 0;
         menuLabel: while (!chosen){
             try {
-                System.out.println("What do you want to do?\n1. Bolus Wizard\n2. Edit Settings");
+                System.out.println("What do you want to do?\n1. Bolus Wizard\n2. Edit Settings\n3. Test Blood Sugar\n4. View History");
                 choice = Integer.parseUnsignedInt(input.next());
-                chosen = true;
+                //chosen = true;
             } catch (NumberFormatException e) {
                 System.err.println(e + ": Please enter an integer.");
             }
@@ -89,14 +107,20 @@ public class InsulinPump {
                         System.out.println("Please enter the amount of carbs (if any) for the current bolus?");
                         int carbs = Integer.parseUnsignedInt(input.next());
                         bolusWizard(carbs);
-                        chosen = true;
+                        //chosen = true;
                         break;
                     } catch (NumberFormatException e) {
                         System.err.println(e + ": Please enter an integer.");
                     }
                 case 2:
                     this.editSettings();
-                    chosen = true;
+                    //chosen = true;
+                    break;
+                case 3:
+                    this.testBloodSugar();
+                    break;
+                case 4:
+                    viewHistory();
                     break;
             }
         }
