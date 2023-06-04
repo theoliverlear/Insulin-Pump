@@ -33,8 +33,8 @@ public class InsulinPump {
     public void setSensitivity(int amount) { this.sensitivity = amount; }
     public void deliveryScreen(double bolus) {
         for (int i = 0; i < Math.ceil(bolus) + 1; i++) {
-            if (i == Math.ceil(bolus)) { System.out.println("Bolus: " + bolus); break; } else {
-                System.out.println("Bolus: " + (double) i);
+            if (i == Math.ceil(bolus)) { System.out.println("Bolus: " + String.format("%.2f", bolus)); break; } else {
+                System.out.println("Bolus: " + String.format("%.2f", (double) i));
                 try { Thread.sleep(1000); } catch (InterruptedException e) { throw new RuntimeException(e); }
             }
         }
@@ -59,7 +59,7 @@ public class InsulinPump {
     }
     public void bolusWizard(int carbs) {
         double bolus = this.calculateBolus(carbs) + this.calculateCorrection();
-        System.out.println("The current bolus is " + bolus + " for " + carbs + " carbs at a blood sugar level of " + this.getBloodSugar());
+        System.out.printf("The current bolus is %.2f for %d carbs at a blood sugar level of %d\n", bolus, carbs, this.getBloodSugar());
         deliveryScreen(bolus);
     }
     public double calculateLantus() {
@@ -110,8 +110,15 @@ public class InsulinPump {
         int choice = 0;
         menuLabel: while (!chosen){
             try {
-                System.out.println("What do you want to do?\n1. Bolus Wizard\n2. Edit Settings\n3. Test Blood Sugar\n4. View History\n5. Calculate Total Basal Bolus");
-                choice = Integer.parseUnsignedInt(input.next());
+                System.out.println("""
+                What do you want to do?
+                1. Bolus Wizard
+                2. Edit Settings
+                3. Test Blood Sugar
+                4. View History
+                5. Calculate Total Basal Bolus
+                6. Exit""");
+                choice = Integer.parseInt(input.next());
                 //chosen = true;
             } catch (NumberFormatException e) {
                 System.err.println(e + ": Please enter an integer.");
@@ -142,12 +149,15 @@ public class InsulinPump {
                     double hours = input.nextDouble();
                     System.out.println("The total basal is: " + this.calculateBasal(hours));
                     break;
+                case 6:
+                    System.out.println("Goodbye!");
+                    chosen = true;
             }
         }
     }
     public static void main(String[] args) {
         System.out.println("Welcome to the insulin pump!");
-        InsulinPump pump = new InsulinPump(15, 50, 150, 600, 0);
+        InsulinPump pump = new InsulinPump(15, 50, 150, 250, 0);
         pump.homeScreen();
     }
 }
